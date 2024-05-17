@@ -20,7 +20,7 @@ const Home: React.FC = () => {
     status: ""
   });
   const [loading, setLoading] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState<string | null>(null); // Aloqada holat o'zgaruvchi
+  const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
 
   const getProducts = async () => {
     try {
@@ -34,7 +34,7 @@ const Home: React.FC = () => {
 
   const deleteProduct = async (id: string) => {
     try {
-      setDeleteLoading(id); // Faqatgina o'zgartirilgan mahsulotni tanlagan bo'lsa uni holat qilamiz
+      setDeleteLoading(id);
       await fetch(`https://auth-rg69.onrender.com/api/products/${id}`, {
         method: 'DELETE'
       });
@@ -42,7 +42,7 @@ const Home: React.FC = () => {
     } catch (error) {
       console.error("Error deleting product:", error);
     } finally {
-      setDeleteLoading(null); // O'zgartirilgan holatni qaytarib qo'yamiz
+      setDeleteLoading(null);
     }
   };
 
