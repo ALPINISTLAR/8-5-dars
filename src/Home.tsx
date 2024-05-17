@@ -6,10 +6,8 @@ interface Product {
   id: string;
   name: string;
   description: string;
-  price: string; // price ni string sifatida saqlash
-  status: string; // rating ni string sifatida saqlash
-  brand: string;
-  // Qo'shimcha ma'lumotlar uchun kerakli xususiyatlar
+  price: string;
+  status: string;
 }
 
 const Home: React.FC = () => {
@@ -18,10 +16,11 @@ const Home: React.FC = () => {
     id: "",
     name: "",
     description: "",
-    price: "", // price ni string sifatida saqlash
-    status: "", // rating ni string sifatida saqlash
-    brand: ""
+    price: "",
+    status: ""
   });
+  const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState<string | null>(null); // Aloqada holat o'zgaruvchi
 
   const getProducts = async () => {
     try {
@@ -35,17 +34,21 @@ const Home: React.FC = () => {
 
   const deleteProduct = async (id: string) => {
     try {
+      setDeleteLoading(id); // Faqatgina o'zgartirilgan mahsulotni tanlagan bo'lsa uni holat qilamiz
       await fetch(`https://auth-rg69.onrender.com/api/products/${id}`, {
         method: 'DELETE'
       });
       setProducts(products.filter(product => product.id !== id));
     } catch (error) {
       console.error("Error deleting product:", error);
+    } finally {
+      setDeleteLoading(null); // O'zgartirilgan holatni qaytarib qo'yamiz
     }
   };
 
   const createProduct = async () => {
     try {
+      setLoading(true);
       const res = await fetch('https://auth-rg69.onrender.com/api/products', {
         method: 'POST',
         headers: {
@@ -55,9 +58,11 @@ const Home: React.FC = () => {
       });
       const data = await res.json();
       setProducts([...products, data]);
-      setNewProduct({ id: "", name: "", description: "", price: "", status: "", brand: "" });
+      setNewProduct({ id: "", name: "", description: "", price: "", status: "" });
     } catch (error) {
       console.error("Error creating product:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -92,13 +97,7 @@ const Home: React.FC = () => {
           onChange={(e) => setNewProduct({ ...newProduct, status: e.target.value })}
           placeholder="Product Status"
         />
-        <input
-          type="text"
-          value={newProduct.brand}
-          onChange={(e) => setNewProduct({ ...newProduct, brand: e.target.value })}
-          placeholder="Product Brand"
-        />
-        <button onClick={createProduct}>Add Product</button>
+        <button onClick={createProduct}>{loading ? 'Adding...' : 'Add Product'}</button>
       </div>
 
       <div className="products">
@@ -106,9 +105,9 @@ const Home: React.FC = () => {
           <div className="product" key={product.id}>
             <Link key={product.id} to={`/blog/${product.id}`} style={{ textDecoration: 'none' }}>
               <h3>{product.name}</h3>
-              <p>{product.description}</p>
+              <p>$. {product.price}</p>
             </Link>
-            <button onClick={() => deleteProduct(product.id)}>Delete</button>
+            <button onClick={() => deleteProduct(product.id)}>{deleteLoading === product.id ? 'Deleting...' : 'Delete'}</button>
           </div>
         ))}
       </div>

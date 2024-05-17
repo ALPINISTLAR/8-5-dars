@@ -3,16 +3,10 @@ import { useParams } from "react-router-dom";
 import './App.css';
 
 interface Product {
-  title: string;
+  name: string;
   description: string;
   price: string | number;
-  discountPercentage: number;
   status: string | number;
-  stock: number;
-  brand: string;
-  category: string;
-  thumbnail?: string;
-  images?: string[];
 }
 
 const Details: React.FC = () => {
@@ -44,14 +38,13 @@ const Details: React.FC = () => {
   }
 
   return (
-    <div className="container">
+    <div className="container product-container">
       <div className="product-detail">
         <div className="product-detail-inner">
-          <h3>Name: {product.title}</h3>
+          <h3>Name: {product.name}</h3>
           <p>Description: {product.description}</p>
           <p>Price: ${product.price}</p>
           <p>Status: {product.status}</p>
-          <p>Brand: {product.brand}</p>
         </div>
       </div>
     </div>
